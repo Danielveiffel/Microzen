@@ -3,7 +3,7 @@
     "name": "Densimab",
     "slug": "densimab",
     "version": "1.0.0",
-    "sdkVersion": "54.0.0",
+    "sdkVersion": "55.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "assetBundlePatterns": ["**/*"],
@@ -14,9 +14,8 @@
     "android": {
       "package": "com.densimab.app",
       "adaptiveIcon": {
-        "backgroundColor": "#1565C0"
+        "backgroundColor": "#1A237E"
       }
-    },
-    "plugins": ["expo-notifications"]
+    }
   }
 }
