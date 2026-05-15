@@ -24,7 +24,11 @@ export const scheduleReminders = async (nextDoseDate, patientName) => {
             sound: true,
             data: { type: 'dose_reminder', daysLeft: days },
           },
-          trigger: { date: reminderDate, channelId: 'densimab' },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: reminderDate,
+            channelId: 'densimab',
+          },
         });
         scheduledIds.push(id);
       } catch {
@@ -45,7 +49,11 @@ export const scheduleReminders = async (nextDoseDate, patientName) => {
           sound: true,
           data: { type: 'dose_day' },
         },
-        trigger: { date: doseDay, channelId: 'densimab' },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date: doseDay,
+          channelId: 'densimab',
+        },
       });
       scheduledIds.push(id);
     } catch {
