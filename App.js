@@ -1,133 +1,93 @@
-import React, { useRef, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Animated, TextInput, FlatList } from 'react-native';
+import React, { useEffect } from 'react';
+import { Platform, Text } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+
+import HomeScreen from './src/screens/HomeScreen';
+import DosesScreen from './src/screens/DosesScreen';
+import DietScreen from './src/screens/DietScreen';
+import ExerciseScreen from './src/screens/ExerciseScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
+const Tab = createBottomTabNavigator();
+
+const TAB_ICONS = {
+  Inicio: '🏠',
+  Dosis: '💉',
+  Dieta: '🥗',
+  Ejercicios: '🏃',
+  Perfil: '👤',
+};
 
 export default function App() {
-  const [breathing, setBreathing] = useState(false);
-  const [reflection, setReflection] = useState('');
-  const [reflections, setReflections] = useState([]);
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    registerForNotifications();
+  }, []);
 
-  const startBreathing = () => {
-    if (breathing) return;
-    setBreathing(true);
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(scaleAnim, { toValue: 1.5, duration: 3000, useNativeDriver: true }),
-        Animated.timing(scaleAnim, { toValue: 1, duration: 3000, useNativeDriver: true }),
-      ])
-    ).start();
-    setTimeout(() => {
-      scaleAnim.stopAnimation();
-      setBreathing(false);
-      scaleAnim.setValue(1);
-    }, 60000);
-  };
+  async function registerForNotifications() {
+    if (!Device.isDevice) return;
 
-  const addReflection = () => {
-    if (reflection.trim().length === 0) return;
-    const entry = { text: reflection.trim(), date: new Date().toISOString() };
-    setReflections(prev => [...prev, entry].sort((a, b) => new Date(a.date) - new Date(b.date)));
-    setReflection('');
-  };
+    const { status: existing } = await Notifications.getPermissionsAsync();
+    let finalStatus = existing;
+    if (existing !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') return;
 
-  const renderItem = ({ item }) => (
-    <View style={styles.reflectionItem}>
-      <Text style={styles.reflectionDate}>{new Date(item.date).toLocaleString()}</Text>
-      <Text style={styles.reflectionText}>{item.text}</Text>
-    </View>
-  );
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('densimab', {
+        name: 'Densimab Recordatorios',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#1565C0',
+      });
+    }
+  }
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.breatheButton} onPress={startBreathing} disabled={breathing}>
-        <Text style={styles.buttonText}>{breathing ? 'Respirando...' : 'Iniciar Respiración'}</Text>
-      </TouchableOpacity>
-      <View style={styles.breathContainer}>
-        <Animated.View style={[styles.circle, { transform: [{ scale: scaleAnim }] }]} />
-      </View>
-      <TextInput
-        style={styles.input}
-        placeholder="Escribe tu reflexión"
-        value={reflection}
-        onChangeText={setReflection}
-      />
-      <TouchableOpacity style={styles.saveButton} onPress={addReflection}>
-        <Text style={styles.buttonText}>Guardar Reflexión</Text>
-      </TouchableOpacity>
-      <FlatList
-        data={reflections}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-        style={styles.list}
-      />
-    </View>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused }) => (
+              <Text style={{ fontSize: focused ? 26 : 22 }}>
+                {TAB_ICONS[route.name]}
+              </Text>
+            ),
+            tabBarActiveTintColor: '#1565C0',
+            tabBarInactiveTintColor: '#999',
+            tabBarStyle: {
+              backgroundColor: '#fff',
+              borderTopWidth: 1,
+              borderTopColor: '#E0E0E0',
+              height: 65,
+              paddingBottom: 10,
+            },
+            tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
+            headerStyle: { backgroundColor: '#1565C0' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontWeight: 'bold', fontSize: 18 },
+          })}
+        >
+          <Tab.Screen name="Inicio" component={HomeScreen} options={{ title: 'Densimab' }} />
+          <Tab.Screen name="Dosis" component={DosesScreen} options={{ title: 'Mis Dosis' }} />
+          <Tab.Screen name="Dieta" component={DietScreen} options={{ title: 'Nutrición' }} />
+          <Tab.Screen name="Ejercicios" component={ExerciseScreen} options={{ title: 'Ejercicios' }} />
+          <Tab.Screen name="Perfil" component={ProfileScreen} options={{ title: 'Mi Perfil' }} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f2f2f2',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  breatheButton: {
-    backgroundColor: '#8ecae6',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
-    width: '100%',
-    alignItems: 'center',
-  },
-  saveButton: {
-    backgroundColor: '#219ebc',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-    width: '100%',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  breathContainer: {
-    height: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  circle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#ffb703',
-    opacity: 0.7,
-  },
-  input: {
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    width: '100%',
-    backgroundColor: '#fff',
-  },
-  list: {
-    marginTop: 20,
-    width: '100%',
-  },
-  reflectionItem: {
-    padding: 10,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-  },
-  reflectionDate: {
-    fontSize: 12,
-    color: '#555',
-  },
-  reflectionText: {
-    fontSize: 16,
-    marginTop: 5,
-  },
-});
