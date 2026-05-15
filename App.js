@@ -11,6 +11,7 @@ import DosesScreen from './src/screens/DosesScreen';
 import DietScreen from './src/screens/DietScreen';
 import ExerciseScreen from './src/screens/ExerciseScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import { DensimabLogo } from './src/components/DensimabLogo';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -76,12 +77,19 @@ export default function App() {
               paddingBottom: 10,
             },
             tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
-            headerStyle: { backgroundColor: '#1565C0' },
+            headerStyle: { backgroundColor: '#1A237E' },
             headerTintColor: '#fff',
             headerTitleStyle: { fontWeight: 'bold', fontSize: 18 },
           })}
         >
-          <Tab.Screen name="Inicio" component={HomeScreen} options={{ title: 'Densimab' }} />
+          <Tab.Screen
+            name="Inicio"
+            component={HomeScreen}
+            options={{
+              headerTitle: () => <DensimabLogo size="small" light />,
+              headerTitleAlign: 'center',
+            }}
+          />
           <Tab.Screen name="Dosis" component={DosesScreen} options={{ title: 'Mis Dosis' }} />
           <Tab.Screen name="Dieta" component={DietScreen} options={{ title: 'Nutrición' }} />
           <Tab.Screen name="Ejercicios" component={ExerciseScreen} options={{ title: 'Ejercicios' }} />

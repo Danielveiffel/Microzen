@@ -5,6 +5,7 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import { saveProfile, getProfile, getDoses } from '../utils/storage';
 import { formatDate, getDaysDiff } from '../utils/dateUtils';
+import { DensimabLogo } from '../components/DensimabLogo';
 
 const EMPTY_PROFILE = {
   name: '',
@@ -180,7 +181,10 @@ export default function ProfileScreen() {
 
       {/* Medication info */}
       <View style={styles.medCard}>
-        <Text style={styles.medTitle}>Información de tu medicamento</Text>
+        <View style={styles.medLogoRow}>
+          <DensimabLogo size="normal" />
+        </View>
+        <View style={styles.medDivider} />
         {[
           ['Medicamento', 'Densimab (Denosumab)'],
           ['Dosis estándar', '60 mg'],
@@ -214,7 +218,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
   header: {
-    backgroundColor: '#1565C0',
+    backgroundColor: '#1A237E',
     padding: 30,
     alignItems: 'center',
   },
@@ -308,13 +312,17 @@ const styles = StyleSheet.create({
   },
   editBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   medCard: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: '#E8EAF6',
     marginHorizontal: 16,
     marginBottom: 12,
     borderRadius: 12,
     padding: 16,
+    borderWidth: 1,
+    borderColor: '#C5CAE9',
   },
-  medTitle: { fontSize: 15, fontWeight: '700', color: '#1565C0', marginBottom: 12 },
+  medLogoRow: { alignItems: 'flex-start', marginBottom: 14 },
+  medDivider: { height: 1, backgroundColor: '#C5CAE9', marginBottom: 14 },
+  medTitle: { fontSize: 15, fontWeight: '700', color: '#1A237E', marginBottom: 12 },
   medRow: { flexDirection: 'row', marginBottom: 7 },
   medLabel: { fontSize: 13, color: '#555', fontWeight: '600', width: 120 },
   medValue: { fontSize: 13, color: '#333', flex: 1, lineHeight: 18 },

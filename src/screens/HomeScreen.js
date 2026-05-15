@@ -5,6 +5,7 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import { getProfile, getDoses } from '../utils/storage';
 import { getDaysDiff, formatDate } from '../utils/dateUtils';
+import { DensimabLogo } from '../components/DensimabLogo';
 
 const TIPS = [
   { icon: '🥛', text: 'Consume 1,000–1,200 mg de calcio al día: lácteos, brócoli y sardinas son tus mejores aliados.' },
@@ -71,10 +72,13 @@ export default function HomeScreen({ navigation }) {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
       <View style={styles.header}>
-        <Text style={styles.greeting}>
-          Hola, {profile?.name?.split(' ')[0] || 'Paciente'} 👋
-        </Text>
-        <Text style={styles.subGreeting}>Bienvenido a tu app Densimab</Text>
+        <DensimabLogo size="large" light />
+        <View style={styles.greetingRow}>
+          <Text style={styles.greeting}>
+            Hola, {profile?.name?.split(' ')[0] || 'Paciente'} 👋
+          </Text>
+          <Text style={styles.subGreeting}>Tu salud ósea en un solo lugar</Text>
+        </View>
       </View>
 
       {/* Next dose card */}
@@ -155,9 +159,16 @@ export default function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
-  header: { backgroundColor: '#1565C0', padding: 24, paddingTop: 16 },
-  greeting: { fontSize: 24, fontWeight: 'bold', color: '#fff' },
-  subGreeting: { fontSize: 14, color: '#90CAF9', marginTop: 4 },
+  header: {
+    backgroundColor: '#1A237E',
+    padding: 20,
+    paddingTop: 12,
+    paddingBottom: 16,
+    gap: 14,
+  },
+  greetingRow: { borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.2)', paddingTop: 12 },
+  greeting: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
+  subGreeting: { fontSize: 13, color: '#90CAF9', marginTop: 3 },
   doseCard: {
     backgroundColor: '#fff',
     margin: 16,
