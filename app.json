@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "Densimab",
+    "slug": "densimab",
+    "version": "1.0.0",
+    "sdkVersion": "55.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.densimab.app"
+    },
+    "android": {
+      "package": "com.densimab.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#1A237E"
+      }
+    }
+  }
+}
